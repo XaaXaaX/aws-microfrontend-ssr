@@ -1,0 +1,46 @@
+{
+    "compilerOptions": {
+        "target": "ES2020",
+        "module": "commonjs",
+        "lib": [
+            "es2020",
+            "dom"
+        ],
+        "incremental": true, 
+        "strict": true,
+        "allowJs": true,
+        "checkJs": true,
+        "allowUnusedLabels": false,
+        "strictNullChecks": true,
+        "alwaysStrict": true,
+        "noImplicitAny": true,
+        "types": [ "node" ],
+        "baseUrl": "./",
+        "outDir": "build",
+        "skipLibCheck": true,
+        "skipDefaultLibCheck": true,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "forceConsistentCasingInFileNames": true,
+        "allowSyntheticDefaultImports": true,
+        "moduleResolution": "Node",
+        "isolatedModules": true, 
+        "esModuleInterop": true,
+        "resolveJsonModule": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "paths": {
+            "@helpers/*": ["helpers/*"]
+        },
+        "jsx": "react-jsx",
+  },
+  "require": [
+      "ts-node/register/transpile-only"
+  ],
+  "exclude": [
+      "esbuild.config.js",
+      "node_modules", 
+      "dist", 
+      "**/*.test.ts"
+    ]
+}
