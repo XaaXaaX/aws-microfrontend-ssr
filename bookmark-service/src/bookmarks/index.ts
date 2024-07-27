@@ -8,5 +8,5 @@ container.register(BookMarksHandler, {useClass: BookMarksHandler});
 container.register(BookMarksRepository, {useClass: BookMarksRepository});
 container.register(BookMarksMicroFrontEnd, {useClass: BookMarksMicroFrontEnd});
 
-const catalogHandler = container.resolve(BookMarksHandler);
-export const handler = catalogHandler.Invoke.bind(BookMarksHandler);
+const bookMarkHandler = container.resolve(BookMarksHandler);
+export const handler = bookMarkHandler.Invoke.bind(BookMarksHandler);

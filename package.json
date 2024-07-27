@@ -6,7 +6,8 @@
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
-    "cdk:product:app": "cdk --profile serverless --app 'npx ts-node --prefer-ts-exts ./product-service/cdk/bin/app.ts' -c env=dev --require-approval never"
+    "cdk:product:app": "cdk --profile serverless --app 'npx ts-node --prefer-ts-exts ./product-service/cdk/bin/app.ts' -c env=dev --require-approval never",
+    "cdk:bookmark:app": "cdk --profile serverless --app 'npx ts-node --prefer-ts-exts ./bookmark-service/cdk/bin/app.ts' -c env=dev --require-approval never"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.142",

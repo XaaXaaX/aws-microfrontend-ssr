@@ -4,9 +4,10 @@ import Item from "./item";
 const List: React.FC<{ items: BookMark[] }> = ({ items }) => {
   return (
       <div>
+        <h3>Your Bookmarks</h3>
         {items.map((item, index) => (
             <Item
-                key={`catalog_product_${index}`}
+                key={`bookmark_${index}`}
                 item={item}
             />
         ))}

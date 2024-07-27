@@ -15,16 +15,16 @@ import {
 import {FunctionUrlOrigin, HttpOrigin} from 'aws-cdk-lib/aws-cloudfront-origins';
 import {IFunctionUrl} from 'aws-cdk-lib/aws-lambda';
 
-export interface FrontStackProps extends NestedStackProps {
+export interface CloudFrontStackProps extends NestedStackProps {
     DefaultOriginFunctionUrl: IFunctionUrl;
 }
 
 export class CloudFrontStack extends NestedStack {
     readonly Distribution: Distribution;
-    constructor(scope: Construct, id: string, props: FrontStackProps) {
+    constructor(scope: Construct, id: string, props: CloudFrontStackProps) {
         super(scope, id, props);
 
-        this.Distribution = new Distribution(this, 'ProductDistribution', {
+        this.Distribution = new Distribution(this, 'BookMarkDistribution', {
             enabled: true,
             priceClass: PriceClass.PRICE_CLASS_100,
             httpVersion: HttpVersion.HTTP2_AND_3,
@@ -46,7 +46,7 @@ export class CloudFrontStack extends NestedStack {
 
         const cfCfnDist = this.Distribution.node.defaultChild as CfnDistribution;
 
-        this.Distribution.addBehavior('product/catalog/*', new FunctionUrlOrigin(props.DefaultOriginFunctionUrl), {
+        this.Distribution.addBehavior('bookmarks/*', new FunctionUrlOrigin(props.DefaultOriginFunctionUrl), {
             allowedMethods: AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
             cachedMethods: AllowedMethods.ALLOW_GET_HEAD,
             cachePolicy: CachePolicy.CACHING_DISABLED,
@@ -56,7 +56,7 @@ export class CloudFrontStack extends NestedStack {
 
         const procductCatalogOriginAccessControl = new aws_cloudfront.CfnOriginAccessControl(this, 'LambdaUrlOAC', {
             originAccessControlConfig: {
-                name: `ProductCatalog-Lambda-OAC`,
+                name: `BookMarks-Lambda-OAC`,
                 originAccessControlOriginType: 'lambda',
                 signingBehavior: 'always',
                 signingProtocol: 'sigv4',

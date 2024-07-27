@@ -6,17 +6,17 @@ import { IFunctionUrl } from 'aws-cdk-lib/aws-lambda';
 export interface FunctionsStackProps extends NestedStackProps {}
 
 export class MicroFrontEndFunctionsStack extends NestedStack {
-    readonly ProductCatalogFunctionUrl: IFunctionUrl;
+    readonly BookMarksFunctionUrl: IFunctionUrl;
     constructor(scope: Construct, id: string, props: FunctionsStackProps) {
         super(scope, id, props);
 
-        const productCatalogFunction = new TypescriptFunction(this, `prodcut-catalog-mfe-function`, {
-            entry: resolve(join(process.cwd(), '/bookmarks/src/catalog', 'index.ts')),
+        const bookMarkFunction = new TypescriptFunction(this, `prodcut-catalog-mfe-function`, {
+            entry: resolve(join(process.cwd(), '/bookmark-service/src/bookmarks', 'index.ts')),
             bundling: {
                 banner: `import { createRequire } from 'module';const require = createRequire(import.meta.url);`
             }
         });
         
-        this.ProductCatalogFunctionUrl = productCatalogFunction.FunctionUrl;
+        this.BookMarksFunctionUrl = bookMarkFunction.FunctionUrl;
     }
 }

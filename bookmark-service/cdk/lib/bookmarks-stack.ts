@@ -8,6 +8,6 @@ export class BookMarksStack extends Stack {
 
     const mfeStack = new MicroFrontEndFunctionsStack(this, MicroFrontEndFunctionsStack.name, {});
 
-    new CloudFrontStack(this, CloudFrontStack.name, { DefaultOriginFunctionUrl: mfeStack.ProductCatalogFunctionUrl })
+    new CloudFrontStack(this, CloudFrontStack.name, { DefaultOriginFunctionUrl: mfeStack.BookMarksFunctionUrl })
   }
 }

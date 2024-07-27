@@ -12,6 +12,6 @@ export class BookMarksMicroFrontEnd {
 
     const results = await this.repository.getCatalogs(filters) || [];
 
-    return `<div id="product_catalog">${ReactDOMServer.renderToString(<List items={results} />)}</div>`;
+    return `<div id="bookmarks">${ReactDOMServer.renderToString(<List items={results} />)}</div>`;
   }
 }

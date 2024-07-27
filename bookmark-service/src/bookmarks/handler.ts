@@ -13,15 +13,15 @@ class BookMarksHandler {
     Invoke = async (event: LambdaFunctionURLEvent): Promise<LambdaFunctionURLResult> => {
         const {
           ref: Ref,
-          seller: Seller,
-          product: ProductName
+          userid: UserId,
+          name: ProductName
         } = RequestHelper.DecodeQueryStringParams(event.queryStringParameters);
 
         if( !event ) 
           throw new Error("Invalid request");
 
         try {
-            const result = await this.mfe.Render({ Ref, Seller, ProductName });
+            const result = await this.mfe.Render({ Ref, UserId, ProductName });
             return ActionResults.Success(result);
             
         } catch (exception: any) {
