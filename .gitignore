@@ -10,3 +10,6 @@ cdk.out
 dist
 build
 
+.DS_Store
+.idea
+.vs

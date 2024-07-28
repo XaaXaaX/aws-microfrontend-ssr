@@ -2,10 +2,12 @@
   "name": "cdk",
   "version": "0.1.0",
   "scripts": {
-    "prebuild": "rm -rf dist",
-    "build": "tsc",
-    "watch": "tsc -w",
     "test": "jest",
+    "watch": "tsc -w",
+    "prebuild": "rm -rf build",
+    "build": "tsc",
+    "build:website": "npm run build & npm install --prefix website/app && npm run build --prefix website/app",
+    "cdk:website:app": "cdk --profile serverless --app 'npx ts-node --prefer-ts-exts ./website/cdk/bin/app.ts' -c env=dev --require-approval never",
     "cdk:product:app": "cdk --profile serverless --app 'npx ts-node --prefer-ts-exts ./product-service/cdk/bin/app.ts' -c env=dev --require-approval never",
     "cdk:bookmark:app": "cdk --profile serverless --app 'npx ts-node --prefer-ts-exts ./bookmark-service/cdk/bin/app.ts' -c env=dev --require-approval never"
   },

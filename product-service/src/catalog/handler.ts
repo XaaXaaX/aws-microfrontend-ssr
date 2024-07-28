@@ -14,7 +14,7 @@ class CatalogHandler {
         const {
           ref: Ref,
           seller: Seller,
-          product: ProductName
+          name: ProductName
         } = RequestHelper.DecodeQueryStringParams(event.queryStringParameters);
 
         if( !event ) 

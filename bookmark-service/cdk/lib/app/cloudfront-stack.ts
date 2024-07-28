@@ -1,9 +1,13 @@
-import {aws_cloudfront, Duration, NestedStack, NestedStackProps } from 'aws-cdk-lib';
+import { Duration, NestedStack, NestedStackProps } from 'aws-cdk-lib';
 import {Construct} from 'constructs';
 import {
     AllowedMethods,
+    CacheCookieBehavior,
+    CacheHeaderBehavior,
     CachePolicy,
+    CacheQueryStringBehavior,
     CfnDistribution,
+    CfnOriginAccessControl,
     Distribution,
     HttpVersion,
     OriginRequestPolicy,
@@ -12,11 +16,12 @@ import {
     SSLMethod,
     ViewerProtocolPolicy,
 } from 'aws-cdk-lib/aws-cloudfront';
-import {FunctionUrlOrigin, HttpOrigin} from 'aws-cdk-lib/aws-cloudfront-origins';
-import {IFunctionUrl} from 'aws-cdk-lib/aws-lambda';
+import { FunctionUrlOrigin } from 'aws-cdk-lib/aws-cloudfront-origins';
+import { IFunctionUrl } from 'aws-cdk-lib/aws-lambda';
+import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 
 export interface CloudFrontStackProps extends NestedStackProps {
-    DefaultOriginFunctionUrl: IFunctionUrl;
+    DefaultOriginListBookMarksFunctionUrl: IFunctionUrl;
 }
 
 export class CloudFrontStack extends NestedStack {
@@ -35,37 +40,49 @@ export class CloudFrontStack extends NestedStack {
               { httpStatus: 403, responseHttpStatus: 200, ttl: Duration.seconds(0),  responsePagePath: '/' },
             ],
             defaultBehavior: {
-                origin: new HttpOrigin('www.example.com', {}),
-                allowedMethods: AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
-                cachedMethods: AllowedMethods.ALLOW_GET_HEAD,
-                cachePolicy: CachePolicy.CACHING_OPTIMIZED,
+                origin: new FunctionUrlOrigin(props.DefaultOriginListBookMarksFunctionUrl, {
+                    connectionAttempts: 3,
+                    connectionTimeout: Duration.seconds(1),
+                    keepaliveTimeout: Duration.seconds(5),
+                }),
+                allowedMethods: AllowedMethods.ALLOW_ALL,
+                cachedMethods: AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
+                cachePolicy: new CachePolicy(this, 'BookMarksCachePolicy', {
+                    headerBehavior: CacheHeaderBehavior.none(),
+                    cookieBehavior: CacheCookieBehavior.none(),
+                    queryStringBehavior: CacheQueryStringBehavior.allowList(
+                        'userid',
+                        'ref',
+                        'name'
+                    ),
+                    defaultTtl: Duration.hours(1),
+                    minTtl: Duration.hours(0),
+                    maxTtl: Duration.hours(24),
+                }),
                 viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-                originRequestPolicy: OriginRequestPolicy.ALL_VIEWER_AND_CLOUDFRONT_2022,
+                originRequestPolicy: OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
             },
         });
 
         const cfCfnDist = this.Distribution.node.defaultChild as CfnDistribution;
 
-        this.Distribution.addBehavior('bookmarks/*', new FunctionUrlOrigin(props.DefaultOriginFunctionUrl), {
-            allowedMethods: AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
-            cachedMethods: AllowedMethods.ALLOW_GET_HEAD,
-            cachePolicy: CachePolicy.CACHING_DISABLED,
-            viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-            originRequestPolicy: OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
-        });
-
-        const procductCatalogOriginAccessControl = new aws_cloudfront.CfnOriginAccessControl(this, 'LambdaUrlOAC', {
+        const bookmarksOriginAccessControl = new CfnOriginAccessControl(this, 'LambdaUrlOAC', {
             originAccessControlConfig: {
                 name: `BookMarks-Lambda-OAC`,
                 originAccessControlOriginType: 'lambda',
-                signingBehavior: 'always',
+                signingBehavior: 'no-override',
                 signingProtocol: 'sigv4',
             }
         });
  
         cfCfnDist.addPropertyOverride(
-            'DistributionConfig.Origins.1.OriginAccessControlId',
-            procductCatalogOriginAccessControl.getAtt('Id')
+            'DistributionConfig.Origins.0.OriginAccessControlId',
+            bookmarksOriginAccessControl.getAtt('Id')
         );
+
+        new StringParameter(this, 'DistributionDomainName', {
+            parameterName: '/bookmark-service/distribution/domain/name',
+            stringValue: this.Distribution.distributionDomainName,
+        });
     }
 }

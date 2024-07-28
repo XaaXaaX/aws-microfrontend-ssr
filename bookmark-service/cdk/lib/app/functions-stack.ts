@@ -10,7 +10,7 @@ export class MicroFrontEndFunctionsStack extends NestedStack {
     constructor(scope: Construct, id: string, props: FunctionsStackProps) {
         super(scope, id, props);
 
-        const bookMarkFunction = new TypescriptFunction(this, `prodcut-catalog-mfe-function`, {
+        const bookMarkFunction = new TypescriptFunction(this, `bookmarks-mfe-function`, {
             entry: resolve(join(process.cwd(), '/bookmark-service/src/bookmarks', 'index.ts')),
             bundling: {
                 banner: `import { createRequire } from 'module';const require = createRequire(import.meta.url);`
