@@ -1,0 +1,30 @@
+.App {
+  text-align: center;
+}
+
+
+.App-header {
+  overflow: "visible";
+  background-color: #282c34;
+  display: flex;
+  flex-flow: row wrap;
+  align-items: top;
+  justify-content: center;
+  text-align: left;
+  font-size: calc(8px + 2vmin);
+  color: white;
+  gap: 10%;
+}
+
+.App-body {
+  overflow: "visible";
+  background-color: #322f2f;
+  display: flex;
+  flex-flow: row wrap;
+  align-items: top;
+  justify-content: center;
+  text-align: left;
+  font-size: calc(8px + 2vmin);
+  color: white;
+  gap: 10%;
+}
