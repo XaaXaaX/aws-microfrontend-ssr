@@ -68,7 +68,7 @@ export class CloudFrontStack extends NestedStack {
             },
         });
 
-        this.Distribution.addBehavior('/products/ref_*', new FunctionUrlOrigin(props.productDetailsFunctionUrl, {
+        this.Distribution.addBehavior('/api/v1/products/details/*', new FunctionUrlOrigin(props.productDetailsFunctionUrl, {
             connectionAttempts: 3,
             connectionTimeout: Duration.seconds(1),
             keepaliveTimeout: Duration.seconds(5),

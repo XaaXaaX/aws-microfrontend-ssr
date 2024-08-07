@@ -10,7 +10,6 @@ export class AccountStack extends Stack {
 
     new CloudFrontStack(this, CloudFrontStack.name, { 
       DefaultOriginListAccountsFunctionUrl: mfeStack.AccountsFunctionUrl,
-      AssetsBucket: mfeStack.AssetsBucket
     })
   }
 }

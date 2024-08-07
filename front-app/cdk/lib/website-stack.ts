@@ -28,15 +28,16 @@ export class WebsiteStack extends Stack {
       cacheControl: [CacheControl.fromString('max-age=1800,must-revalidate')],
       destinationBucket: frontStack.Bucket,
       prune: false,
+      distribution: ditribution.Distribution,
+      distributionPaths: ['/*'],
   });
   
     new BucketDeployment(this, 'RedirectionDeployment', {
         sources: [ Source.asset(join(process.cwd(), '/front-app/src/redirection-files')) ],
         metadata: {
-            'location': `https://${ditribution.Distribution.distributionDomainName}/products/catalog/v1/?category=ON_SOLD`,
+            'location': `https://${ditribution.Distribution.distributionDomainName}/H?category=ON_SOLD`,
         },
         destinationBucket: frontStack.Bucket,
-        destinationKeyPrefix: 'products/golden/',
         prune: false,
     });
   }

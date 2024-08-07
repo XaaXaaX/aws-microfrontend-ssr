@@ -18,7 +18,7 @@ export class S3OriginWithoutOriginAccessIdentity extends OriginBase {
     }
 }
 
-export interface S3CloudFrontWebBucketProps extends BucketProps {}
+export type S3CloudFrontWebBucketProps = BucketProps & { DeploymentSourcePath: string; };
 export class S3CloudFrontWebBucket extends Bucket {
     constructor(scope: Construct, id: string, props?: S3CloudFrontWebBucketProps) {
         super(scope, id, props);
@@ -44,11 +44,11 @@ export class S3CloudFrontWebBucket extends Bucket {
             })
         );
 
-        new BucketDeployment(this, 'BucketDeployment', {
-            sources: [ Source.asset(path.join(process.cwd(), '/accounts/app/build')) ],
-            cacheControl: [
-                CacheControl.fromString('max-age=1800,must-revalidate')],
-            destinationBucket: this,
-          });
+        if(props?.DeploymentSourcePath)
+            new BucketDeployment(this, 'BucketDeployment', {
+                sources: [ Source.asset(path.join(process.cwd(), props?.DeploymentSourcePath)) ],
+                cacheControl: [ CacheControl.fromString('max-age=1800,must-revalidate')],
+                destinationBucket: this,
+            });
     }
 }

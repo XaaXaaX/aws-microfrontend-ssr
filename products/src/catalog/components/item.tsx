@@ -9,7 +9,7 @@ const Item: React.FC<{ item: Product }> = ({ item }) => {
       <div style={{"display": "flex", "alignItems" : "stretch"}}>
         <h5>{item.ProductName} </h5><h6>{`(${item.Ref})`}</h6>
       </div>
-      <a href={ isOnSold(item) ? `/products/golden/${item.Ref}/` :`/products/${item.Ref}/`}>🔍</a>
+      <a href={ isOnSold(item) ? `/${item.Ref}?ref=${item.Ref}` :`/products/?ref=${item.Ref}`}>🔍</a>
       <p>{ isOnSold(item) ? '🔥' : '💰'} {item.Price}</p>
       <p>👤: {item.Seller}</p>
     </>

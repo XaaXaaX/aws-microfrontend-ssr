@@ -82,39 +82,35 @@ export class CloudFrontStack extends NestedStack {
                 cachedMethods: AllowedMethods.ALLOW_GET_HEAD,
                 cachePolicy: WebCachePolicy,
                 viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+                functionAssociations: [
+                    {
+                        function: new Function(scope, `ProductRedirectFunctionViewerResponse`, {
+                            code: FunctionCode.fromFile({ filePath: `front-app/src/url-redirect.js`}),
+                            runtime: FunctionRuntime.JS_2_0 
+                        }),
+                        eventType: FunctionEventType.VIEWER_RESPONSE,
+                    },
+                ],
             },
         });
 
         const cfCfnDist = this.Distribution.node.defaultChild as CfnDistribution;
 
-        this.Distribution.addBehavior('products/golden/*', webbucketOrigin , {
-            allowedMethods: AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
-            functionAssociations: [
-                {
-                    function: new Function(scope, `ProductRedirectFunctionViewerResponse`, {
-                        code: FunctionCode.fromFile({ filePath: `front-app/src/url-redirect.js`}),
-                        runtime: FunctionRuntime.JS_2_0 
-                    }),
-                    eventType: FunctionEventType.VIEWER_RESPONSE,
-                },
-            ],
-        });
-
-        this.Distribution.addBehavior('bookmarks/*', new HttpOrigin(props.BookmarkServiceDomainName), {
+        this.Distribution.addBehavior('api/v1/bookmarks/*', new HttpOrigin(props.BookmarkServiceDomainName), {
             allowedMethods: AllowedMethods.ALLOW_ALL,
             cachePolicy: dynamicContentCachePolicy,
             viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
             originRequestPolicy: dynamicContentOriginRequestPolicy
         });
 
-        this.Distribution.addBehavior('products/*', new HttpOrigin(props.ProductServiceDomainName), {
+        this.Distribution.addBehavior('api/v1/products/*', new HttpOrigin(props.ProductServiceDomainName), {
             allowedMethods: AllowedMethods.ALLOW_ALL,
             cachePolicy: dynamicContentCachePolicy,
             viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
             originRequestPolicy: dynamicContentOriginRequestPolicy,
         });
         
-        this.Distribution.addBehavior('accounts/*', new HttpOrigin(props.AccountServiceDomainName), {
+        this.Distribution.addBehavior('api/v1/accounts/*', new HttpOrigin(props.AccountServiceDomainName), {
             allowedMethods: AllowedMethods.ALLOW_ALL,
             cachePolicy: dynamicContentCachePolicy,
             viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
