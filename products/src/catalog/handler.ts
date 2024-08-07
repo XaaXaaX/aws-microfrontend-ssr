@@ -4,7 +4,7 @@ import { ActionResults } from "@helpers/action-results";
 import { RequestHelper } from "@helpers/request-helper";
 import { LambdaFunctionURLEvent, LambdaFunctionURLResult } from "aws-lambda";
 import { CatalogMicroFrontEnd } from "./catalog";
-import { Catalog } from "./models/model";
+import { Product } from "../models/model";
 
 @injectable()
 class CatalogHandler {
@@ -17,14 +17,15 @@ class CatalogHandler {
           ref: Ref,
           seller: Seller,
           name: ProductName,
-          category: Category
+          category: Category,
+          price: Price
         } = RequestHelper.DecodeQueryStringParams(event.queryStringParameters);
 
         if( !event ) 
           throw new Error("Invalid request");
 
         try {
-            const result = await this.mfe.Render({ Ref, Seller, ProductName, Category } as Partial<Catalog>);
+            const result = await this.mfe.Render({ Ref, Seller, ProductName, Category, Price: parseInt(Price ?? '0') } as Partial<Product>);
             return ActionResults.Success(result);
             
         } catch (exception: any) {

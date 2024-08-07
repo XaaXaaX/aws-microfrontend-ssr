@@ -1,16 +1,16 @@
 import ReactDOMServer from 'react-dom/server';
 import { inject, injectable } from 'tsyringe';
-import { CatalogsRepository } from './repository/catalogs-repository';
-import { Catalog } from './models/model';
+import { ProductsRepository } from '../repository/catalogs-repository';
+import { Product } from '../models/model';
 import List from './components/List';
 
 @injectable()
 export class CatalogMicroFrontEnd {
   constructor(
-    @inject(CatalogsRepository) private readonly repository: CatalogsRepository) { }
-  Render = async (filters: Partial<Catalog>): Promise<string> => {
+    @inject(ProductsRepository) private readonly repository: ProductsRepository) { }
+  Render = async (filters: Partial<Product>): Promise<string> => {
 
-    const results = await this.repository.getCatalogs(filters) || [];
+    const results = await this.repository.getCatalog(filters) || [];
 
     return `<div id="product_catalog">${ReactDOMServer.renderToString(<List items={results} />)}</div>`;
   }

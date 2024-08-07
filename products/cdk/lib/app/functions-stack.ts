@@ -7,6 +7,8 @@ export interface FunctionsStackProps extends NestedStackProps {}
 
 export class MicroFrontEndFunctionsStack extends NestedStack {
     readonly ProductCatalogFunctionUrl: IFunctionUrl;
+    readonly ProductDetailsFunctionUrl: IFunctionUrl;
+
     constructor(scope: Construct, id: string, props: FunctionsStackProps) {
         super(scope, id, props);
 
@@ -16,7 +18,15 @@ export class MicroFrontEndFunctionsStack extends NestedStack {
                 banner: `import { createRequire } from 'module';const require = createRequire(import.meta.url);`
             }
         });
+
+        const productDetailsFunction = new TypescriptFunction(this, `prodcut-details-mfe-function`, {
+            entry: resolve(join(process.cwd(), '/products/src/details', 'index.ts')),
+            bundling: {
+                banner: `import { createRequire } from 'module';const require = createRequire(import.meta.url);`
+            }
+        });
         
         this.ProductCatalogFunctionUrl = productCatalogFunction.FunctionUrl;
+        this.ProductDetailsFunctionUrl = productDetailsFunction.FunctionUrl;
     }
 }

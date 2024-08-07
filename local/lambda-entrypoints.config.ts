@@ -6,6 +6,8 @@ const configs: ConfigSource[] = [
     { path: "accounts/signin/v1/", source: 'accounts/src/signin/index.ts' },
     { path: "bookmarks/v1/", source: 'bookmarks/src/bookmarks/index.ts' },
     { path: "products/catalog/v1/", source: 'products/src/catalog/index.ts' },
+    { path: "products/:ref/", source: 'products/src/details/index.ts' },
+
 ];
 
 export const lambdasEntrypoints = globSync(configs.map(src => src.source ?? './')  , { 

@@ -8,6 +8,9 @@ export class ProductStack extends Stack {
 
     const mfeStack = new MicroFrontEndFunctionsStack(this, MicroFrontEndFunctionsStack.name, {});
 
-    new CloudFrontStack(this, CloudFrontStack.name, { DefaultOriginFunctionUrl: mfeStack.ProductCatalogFunctionUrl })
+    new CloudFrontStack(this, CloudFrontStack.name, { 
+      DefaultOriginFunctionUrl: mfeStack.ProductCatalogFunctionUrl,
+      productDetailsFunctionUrl: mfeStack.ProductDetailsFunctionUrl
+     })
   }
 }

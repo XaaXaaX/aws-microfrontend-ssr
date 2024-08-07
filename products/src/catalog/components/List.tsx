@@ -1,7 +1,7 @@
-import { Catalog } from "../models/model";
+import { Catalog } from "../../models/model";
 import Item from "./item";
 
-const List: React.FC<{ items: Catalog[] }> = ({ items }) => {
+const List: React.FC<{ items: Catalog }> = ({ items }) => {
   return (
       <div style={{"display": "flex", "flexFlow": "row wrap", "overflow": "visible", "gap": "5%"}}>
         {items.map((item, index) => (

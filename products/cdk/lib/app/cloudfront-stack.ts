@@ -22,6 +22,7 @@ import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 
 export interface FrontStackProps extends NestedStackProps {
     DefaultOriginFunctionUrl: IFunctionUrl;
+    productDetailsFunctionUrl: IFunctionUrl;
 }
 
 export class CloudFrontStack extends NestedStack {
@@ -54,7 +55,9 @@ export class CloudFrontStack extends NestedStack {
                     queryStringBehavior: CacheQueryStringBehavior.allowList(
                         'seller',
                         'ref',
-                        'name'
+                        'name',
+                        'category',
+                        'price'
                     ),
                     defaultTtl: Duration.hours(1),
                     minTtl: Duration.hours(0),
@@ -65,6 +68,24 @@ export class CloudFrontStack extends NestedStack {
             },
         });
 
+        this.Distribution.addBehavior('/products/ref_*', new FunctionUrlOrigin(props.productDetailsFunctionUrl, {
+            connectionAttempts: 3,
+            connectionTimeout: Duration.seconds(1),
+            keepaliveTimeout: Duration.seconds(5),
+        }), {
+            allowedMethods: AllowedMethods.ALLOW_ALL,
+            cachedMethods: AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
+            cachePolicy: new CachePolicy(this, 'ProductDetailsCachePolicy', {
+                headerBehavior: CacheHeaderBehavior.none(),
+                cookieBehavior: CacheCookieBehavior.none(),
+                queryStringBehavior: CacheQueryStringBehavior.none(),
+                defaultTtl: Duration.hours(1),
+                minTtl: Duration.hours(0),
+                maxTtl: Duration.hours(24),
+            }),
+            viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+            originRequestPolicy: OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
+        });
         const cfCfnDist = this.Distribution.node.defaultChild as CfnDistribution;
 
         const procductCatalogOriginAccessControl = new CfnOriginAccessControl(this, 'LambdaUrlOAC', {
@@ -80,6 +101,12 @@ export class CloudFrontStack extends NestedStack {
             'DistributionConfig.Origins.0.OriginAccessControlId',
             procductCatalogOriginAccessControl.getAtt('Id')
         );
+
+        cfCfnDist.addPropertyOverride(
+            'DistributionConfig.Origins.1.OriginAccessControlId',
+            procductCatalogOriginAccessControl.getAtt('Id')
+        );
+        
 
         new StringParameter(this, 'DistributionDomainName', {
             parameterName: '/products/distribution/domain/name',

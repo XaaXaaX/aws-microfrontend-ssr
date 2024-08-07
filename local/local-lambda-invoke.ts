@@ -158,7 +158,7 @@ router.all("/lambda/:lambda/:handler/", async (req: Request, res: Response) => {
   handleRoute(lambdaEntry!, req, res);
 });
 
-router.get('*', async (req: Request, res: Response) => {
+router.all('*', async (req: Request, res: Response) => {
   console.log(`[Local λ debugger]: Catch All route reached, route not configured for ${req.url}`);
   return res.status(404).json({ error: "route not found" }).end();
 });
