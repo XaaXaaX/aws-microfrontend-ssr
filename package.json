@@ -7,13 +7,12 @@
     "prebuild": "rm -rf build",
     "build": "tsc",
     "local:start": "ts-node --project local/tsconfig.local.json local/local-lambda-invoke.ts ",
-    "local:website": "REACT_APP_LOCAL_URL=http://localhost:4242/invoke/ npm run start --prefix front-app/website",
+    "local:website": "REACT_APP_LOCAL_URL=http://localhost:4242 npm run start --prefix front-app/website",
     "build:website": "npm install --prefix front-app/website && npm run build --prefix front-app/website",
-    "build:accounts:mfe": "npm install --prefix accounts/app && npm run build --prefix accounts/app",
     "cdk:website:app": "cdk --profile serverless --app 'npx ts-node --prefer-ts-exts ./front-app/cdk/bin/app.ts' -c env=dev --require-approval never",
-    "cdk:product:app": "cdk --profile serverless --app 'npx ts-node --prefer-ts-exts ./products/cdk/bin/app.ts' -c env=dev --require-approval never",
-    "cdk:bookmark:app": "cdk --profile serverless --app 'npx ts-node --prefer-ts-exts ./bookmarks/cdk/bin/app.ts' -c env=dev --require-approval never",
-    "cdk:account:app": "cdk --profile serverless --app 'npx ts-node --prefer-ts-exts ./accounts/cdk/bin/app.ts' -c env=dev --require-approval never"
+    "cdk:product:app": "cdk --profile serverless --app 'npx ts-node --prefer-ts-exts ./micro-fronends/products/cdk/bin/app.ts' -c env=dev --require-approval never",
+    "cdk:bookmark:app": "cdk --profile serverless --app 'npx ts-node --prefer-ts-exts ./micro-fronends/bookmarks/cdk/bin/app.ts' -c env=dev --require-approval never",
+    "cdk:account:app": "cdk --profile serverless --app 'npx ts-node --prefer-ts-exts ./micro-fronends/accounts/cdk/bin/app.ts' -c env=dev --require-approval never"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.142",

@@ -10,7 +10,7 @@ The service configs are as below
 const configs: ConfigSource[] = [
     { path: "accounts/signin/v1/", source: '@account/signin/index.ts' },
     { path: "bookmarks/v1/", source: '@bookmark/bookmarks/index.ts' },
-    { path: "products/catalog/v1/", source: 'products/src/catalog/index.ts' },
+    { path: "products/catalog/v1/", source: '@products/src/catalog/index.ts' },
 ];
 ```
 

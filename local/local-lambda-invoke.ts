@@ -102,7 +102,7 @@ const router = express.Router();
 
 const port = process.env.LOCAL_DEBUG_SERVER_PORT;
 
-const handleRoute = async (lambdaEntry: { entryPoint: string, handlerFn?: string, }, req: Request, res: Response ) => {
+const handleRoute = async (lambdaEntry: { entryPoint: string, handlerFn?: string, action?: (...args: any) => void }, req: Request, res: Response ) => {
   if (!lambdaEntry) {
     return res.status(404).json({
       error: "lambda entrypoint not found. An entrypoint should be the path of the lambda you want to invoke. Please make sure that your entrypoint is defined in `lambda-entrypoints.config.ts` file"
@@ -110,6 +110,11 @@ const handleRoute = async (lambdaEntry: { entryPoint: string, handlerFn?: string
       .end();
   }
 
+  if(lambdaEntry.action) {
+    lambdaEntry.action(req, res);
+    return;
+  }
+  
   const module = await import(lambdaEntry.entryPoint);
   const lambdaFunctionHandler = module[lambdaEntry.handlerFn ?? "handler"];
 
@@ -163,7 +168,7 @@ router.all('*', async (req: Request, res: Response) => {
   return res.status(404).json({ error: "route not found" }).end();
 });
 
-app.use("/invoke", router);
+app.use("/", router);
 
 app.listen(port, async () => {
   console.log(`[Local λ debugger]: Local lambda invoke debug server is running at http://localhost:${port}`);
